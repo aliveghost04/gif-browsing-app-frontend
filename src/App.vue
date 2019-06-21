@@ -1,13 +1,21 @@
 <template>
   <v-app>
     <v-toolbar app v-show="showToolbar">
-      <v-toolbar-title class="headline text-uppercase">
+      <v-toolbar-title class="headline text-uppercase" style="width:200px">
         <router-link :to="{
           name: 'home'
         }">
           <img src="./assets/logo.png" alt="logo">
         </router-link>
       </v-toolbar-title>
+      <div v-show="$route.name !== 'home'">
+        <v-text-field
+          hide-details
+          solo
+          append-icon="search"
+          placeholder="Search"
+        ></v-text-field>
+      </div>
       <v-spacer></v-spacer>
       <div v-if="user">
         <v-menu offset-y>
@@ -26,7 +34,7 @@
               })"
             >
               <v-list-tile-title>
-                <v-icon>star</v-icon>&nbsp;
+                <v-icon small>favorite</v-icon>&nbsp;
                 Favorite
               </v-list-tile-title>
             </v-list-tile>
@@ -35,14 +43,14 @@
               })"
             >
               <v-list-tile-title>
-                <v-icon>history</v-icon>&nbsp;
+                <v-icon small>history</v-icon>&nbsp;
                 History
               </v-list-tile-title>
             </v-list-tile>
             <v-list-tile @click="logout"
             >
               <v-list-tile-title>
-                <v-icon>exit_to_app</v-icon>&nbsp;
+                <v-icon small>exit_to_app</v-icon>&nbsp;
                 Log out
               </v-list-tile-title>
             </v-list-tile>
@@ -74,6 +82,18 @@
     <v-content>
       <router-view></router-view>
     </v-content>
+
+    <v-footer height="60">
+      <v-layout column align-center>
+      <v-flex xs12>
+        &copy; 2019. All rights reserved
+      </v-flex>
+      <v-flex xs12>
+          Made with <v-icon small color="red">favorite</v-icon> by
+          <a href="https://github.com/aliveghost04" target="_blank">Erick Jiménez</a>
+      </v-flex>
+      </v-layout>
+    </v-footer>
   </v-app>
 </template>
 

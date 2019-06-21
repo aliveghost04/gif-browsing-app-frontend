@@ -12,20 +12,21 @@
       </v-flex>
     </v-layout>
     <v-layout wrap>
-      <v-flex xs12 offset-md3 md6>
+      <v-flex xs12 offset-md3 md6 mb-4>
         <v-text-field
           outline
+          hide-details
           label="Search"
           append-icon="search"
         ></v-text-field>
       </v-flex>
       <v-flex xs12 offset-md3 md6 text-xs-center v-if="user">
         <v-btn>
-          <v-icon>star</v-icon>&nbsp;
+          <v-icon small>favorite</v-icon>&nbsp;
           Favorites
         </v-btn>
         <v-btn>
-          <v-icon>history</v-icon>&nbsp;
+          <v-icon small>history</v-icon>&nbsp;
           History
         </v-btn>
       </v-flex>
