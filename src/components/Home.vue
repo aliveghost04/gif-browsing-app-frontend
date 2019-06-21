@@ -1,6 +1,6 @@
 <template>
   <v-container text-center>
-    <v-layout xs12>
+    <v-layout>
       <v-flex xs12 offset-md3 md6>
         <v-img
           justify-center
@@ -18,6 +18,8 @@
           hide-details
           label="Search"
           append-icon="search"
+          v-model="searchTerm"
+          @key.enter="search"
         ></v-text-field>
       </v-flex>
       <v-flex xs12 offset-md3 md6 text-xs-center v-if="user">
@@ -39,9 +41,25 @@
     data() {
       return {};
     },
+    methods: {
+      search() {
+        console.log(this.searchTerm);
+        this.$router.push({
+          name: 'search',
+        });
+      }
+    },
     computed: {
       user() {
         return this.$store.state.user;
+      },
+      searchTerm: {
+        get() {
+          return this.$store.state.searchTerm;
+        },
+        set(value) {
+          this.$store.commit('updateSearchTerm', value);
+        },
       },
     },
   };

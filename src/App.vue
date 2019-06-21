@@ -9,11 +9,12 @@
         </router-link>
       </v-toolbar-title>
       <div v-show="$route.name !== 'home'">
-        <v-text-field
+        <v-text-field style="min-width:500px"
           hide-details
           solo
           append-icon="search"
           placeholder="Search"
+          v-model="searchTerm"
         ></v-text-field>
       </div>
       <v-spacer></v-spacer>
@@ -115,6 +116,14 @@ export default {
     },
     user() {
       return this.$store.state.user;
+    },
+    searchTerm: {
+      get() {
+        return this.$store.state.searchTerm;
+      },
+      set(value) {
+        this.$store.commit('updateSearchTerm', value);
+      }
     },
   },
 };
