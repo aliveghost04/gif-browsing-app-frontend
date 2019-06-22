@@ -1,87 +1,122 @@
 <template>
   <v-app>
     <v-toolbar app v-show="showToolbar">
-      <v-toolbar-title class="headline text-uppercase" style="width:200px">
-        <router-link :to="{
-          name: 'home'
-        }">
-          <img src="./assets/logo.png" alt="logo">
-        </router-link>
-      </v-toolbar-title>
-      <div v-show="$route.name !== 'home'">
-        <v-text-field style="min-width:500px"
+      <v-layout>
+        <v-flex xs2>
+          <v-toolbar-title class="headline text-uppercase">
+            <router-link :to="{
+              name: 'home'
+            }">
+              <img class="d-flex" src="./assets/logo.png" alt="logo">
+            </router-link>
+          </v-toolbar-title>
+        </v-flex>
+
+      <v-flex xs6 align-center justify-center d-flex>
+        <v-text-field
+          v-show="$route.name !== 'home'"
           hide-details
           solo
           append-icon="search"
           placeholder="Search"
           v-model="searchTerm"
+          @keyup.enter="search"
         ></v-text-field>
-      </div>
-      <v-spacer></v-spacer>
-      <div v-if="user">
-        <v-menu offset-y>
-          <template v-slot:activator="{ on }">
-            <v-btn
-              color="info"
-              v-on="on"
-            >
-              {{ user.fullName }}
-              <v-icon>arrow_drop_down</v-icon>
-            </v-btn>
-          </template>
-          <v-list>
-            <v-list-tile @click="$route.push({
-                name: 'favorite'
-              })"
-            >
-              <v-list-tile-title>
-                <v-icon small>favorite</v-icon>&nbsp;
-                Favorite
-              </v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile @click="$route.push({
-                name: 'history'
-              })"
-            >
-              <v-list-tile-title>
-                <v-icon small>history</v-icon>&nbsp;
-                History
-              </v-list-tile-title>
-            </v-list-tile>
-            <v-list-tile @click="logout"
-            >
-              <v-list-tile-title>
-                <v-icon small>exit_to_app</v-icon>&nbsp;
-                Log out
-              </v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
-      </div>
-      <div v-else>
-        <v-btn
-          flat
-          color="teal"
-          :to="{
-            name: 'login'
-          }"
-        >
-          <span class="mr-2">Iniciar sesión</span>
-        </v-btn>
-        <v-btn
-          raised
-          color="info"
-          :to="{
-            name: 'register'
-          }"
-        >
-          <span class="mr-2">Registrarse</span>
-        </v-btn>
-      </div>
+      </v-flex>
+      <v-flex xs4 text-xs-right>
+        <div v-if="user">
+          <v-menu offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn
+                color="info"
+                v-on="on"
+              >
+                {{ user.first_name }} {{ user.last_name }}
+                <v-icon>arrow_drop_down</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-tile @click="$router.push({
+                  name: 'favorite'
+                })"
+              >
+                <v-list-tile-title>
+                  <v-icon small>favorite</v-icon>&nbsp;
+                  Favorites
+                </v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile @click="$router.push({
+                  name: 'history'
+                })"
+              >
+                <v-list-tile-title>
+                  <v-icon small>history</v-icon>&nbsp;
+                  History
+                </v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile @click="logout"
+              >
+                <v-list-tile-title>
+                  <v-icon small>exit_to_app</v-icon>&nbsp;
+                  Log out
+                </v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
+        </div>
+        <div v-else>
+          <v-btn
+            flat
+            color="teal"
+            :to="{
+              name: 'login'
+            }"
+          >
+            <span class="mr-2">Iniciar sesión</span>
+          </v-btn>
+          <v-btn
+            raised
+            color="info"
+            :to="{
+              name: 'register'
+            }"
+          >
+            <span class="mr-2">Registrarse</span>
+          </v-btn>
+        </div>
+      </v-flex>
+      </v-layout>
     </v-toolbar>
 
     <v-content>
       <router-view></router-view>
+      <v-dialog
+        :value="isLoading"
+        overlay
+        persistent
+        width="300"
+      >
+        <v-card
+          color="primary"
+          dark
+        >
+          <v-card-text>
+            Loading, please stand by
+            <v-progress-linear
+              indeterminate
+              color="white"
+              class="mb-0"
+            ></v-progress-linear>
+          </v-card-text>
+        </v-card>
+      </v-dialog>
+      <v-snackbar
+        :value="alert.show"
+        :color="alert.color"
+        :timeout="alert.timeout"
+      >
+        {{ alert.message }}
+      </v-snackbar>
     </v-content>
 
     <v-footer height="60">
@@ -103,11 +138,26 @@ export default {
   name: 'App',
   data() {
     return {
+      searchTerm: '',
     };
+  },
+  mounted() {
+    this.searchTerm = this.$route.query.q;
   },
   methods: {
     logout() {
-      console.log('logout');
+      this.$store.commit('logout');
+      this.$router.push({
+        name: 'home',
+      });
+    },
+    search() {
+      this.$router.push({
+        name: 'search',
+        query: {
+          q: this.searchTerm,
+        },
+      });
     },
   },
   computed: {
@@ -117,13 +167,11 @@ export default {
     user() {
       return this.$store.state.user;
     },
-    searchTerm: {
-      get() {
-        return this.$store.state.searchTerm;
-      },
-      set(value) {
-        this.$store.commit('updateSearchTerm', value);
-      }
+    isLoading() {
+      return this.$store.state.isLoading;
+    },
+    alert() {
+      return this.$store.state.alert;
     },
   },
 };

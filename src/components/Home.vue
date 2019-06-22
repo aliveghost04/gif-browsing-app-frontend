@@ -19,15 +19,23 @@
           label="Search"
           append-icon="search"
           v-model="searchTerm"
-          @key.enter="search"
+          @keyup.enter="search"
         ></v-text-field>
       </v-flex>
       <v-flex xs12 offset-md3 md6 text-xs-center v-if="user">
-        <v-btn>
+        <v-btn
+          :to="{
+            name: 'favorite'
+          }"
+        >
           <v-icon small>favorite</v-icon>&nbsp;
           Favorites
         </v-btn>
-        <v-btn>
+        <v-btn
+          :to="{
+            name: 'history'
+          }"
+        >
           <v-icon small>history</v-icon>&nbsp;
           History
         </v-btn>
@@ -37,32 +45,28 @@
 </template>
 
 <script>
-  export default {
-    data() {
-      return {};
-    },
-    methods: {
-      search() {
-        console.log(this.searchTerm);
-        this.$router.push({
-          name: 'search',
-        });
-      }
-    },
-    computed: {
-      user() {
-        return this.$store.state.user;
-      },
-      searchTerm: {
-        get() {
-          return this.$store.state.searchTerm;
+export default {
+  data() {
+    return {
+      searchTerm: '',
+    };
+  },
+  methods: {
+    search() {
+      this.$router.push({
+        name: 'search',
+        query: {
+          q: this.searchTerm,
         },
-        set(value) {
-          this.$store.commit('updateSearchTerm', value);
-        },
-      },
+      });
     },
-  };
+  },
+  computed: {
+    user() {
+      return this.$store.state.user;
+    },
+  },
+};
 </script>
 
 <style>

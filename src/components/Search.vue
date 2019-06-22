@@ -1,281 +1,78 @@
 <template>
 <v-container text-center>
-    <h4>Search result for {{ searchTerm }}</h4>
-    <gif-list :gifs="gifs"></gif-list>
+    <h3>Search result for "{{ searchTerm }}"</h3>
+    <gif-list
+        v-if="gifs.length > 0"
+        :gifs="gifs"
+        :pagination="pagination"
+    ></gif-list>
+    <v-alert
+      v-else
+      :value="true"
+      type="info"
+    >
+      No search results for you query.
+    </v-alert>
 </v-container>
 </template>
 
 <script>
 import GifList from './GifList.vue';
+import Search from '../services/Search';
 
 export default {
-    name: 'Search',
-    components: {
-        GifList,
-    },
-    data() {
-        return {
-            gifs: [
-                {
-                    type: "gif",
-                    id: "feqkVgjJpYtjy",
-                    slug: "eyes-shocked-bird-feqkVgjJpYtjy",
-                    url: "http://giphy.com/gifs/eyes-shocked-bird-feqkVgjJpYtjy",
-                    bitly_gif_url: "http://gph.is/XJ200y",
-                    bitly_url: "http://gph.is/XJ200y",
-                    embed_url: "http://giphy.com/embed/feqkVgjJpYtjy",
-                    username: "",
-                    source: "http://littleanimalgifs.tumblr.com/post/17994517807",
-                    rating: "g",
-                    caption: "",
-                    content_url: "",
-                    source_tld: "littleanimalgifs.tumblr.com",
-                    source_post_url: "http://littleanimalgifs.tumblr.com/post/17994517807",
-                    import_datetime: "2013-03-21 04:03:08",
-                    trending_datetime: "2014-11-12 06:22:52",
-                    images: {
-                        fixed_height: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/200.gif",
-                            width: "445",
-                            height: "200",
-                            size: "445432",
-                            mp4: "http://media0.giphy.com/media/feqkVgjJpYtjy/200.mp4",
-                            mp4_size: "27279",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/200.webp",
-                            webp_size: "420734"
-                        },
-                        fixed_height_still: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/200_s.gif",
-                            width: "445",
-                            height: "200"
-                        },
-                        fixed_height_downsampled: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/200_d.gif",
-                            width: "445",
-                            height: "200",
-                            size: "183225",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/200_d.webp",
-                            webp_size: "89516"
-                        },
-                        fixed_width: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/200w.gif",
-                            width: "200",
-                            height: "90",
-                            size: "115885",
-                            mp4: "http://media0.giphy.com/media/feqkVgjJpYtjy/200w.mp4",
-                            mp4_size: "31919",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/200w.webp",
-                            webp_size: "122600"
-                        },
-                        fixed_width_still: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/200w_s.gif",
-                            width: "200",
-                            height: "90"
-                        },
-                        fixed_width_downsampled: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/200w_d.gif",
-                            width: "200",
-                            height: "90",
-                            size: "83007",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/200w_d.webp",
-                            webp_size: "26460"
-                        },
-                        fixed_height_small: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/100.gif",
-                            width: "223",
-                            height: "100",
-                            size: "445432",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/100.webp",
-                            webp_size: "129604"
-                        },
-                        fixed_height_small_still: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/100_s.gif",
-                            width: "223",
-                            height: "100"
-                        },
-                        fixed_width_small: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/100w.gif",
-                            width: "100",
-                            height: "45",
-                            size: "115885",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/100w.webp",
-                            webp_size: "41620"
-                        },
-                        fixed_width_small_still: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/100w_s.gif",
-                            width: "100",
-                            height: "45"
-                        },
-                        downsized: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy.gif",
-                            width: "334",
-                            height: "150",
-                            size: "511581"
-                        },
-                        downsized_still: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy_s.gif",
-                            width: "334",
-                            height: "150"
-                        },
-                        downsized_large: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy.gif",
-                            width: "334",
-                            height: "150",
-                            size: "511581"
-                        },
-                        original: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy.gif",
-                            width: "334",
-                            height: "150",
-                            size: "511581",
-                            frames: "27",
-                            mp4: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy.mp4",
-                            mp4_size: "97841",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy.webp",
-                            webp_size: "270108"
-                            },
-                            original_still: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy_s.gif",
-                            width: "334",
-                            height: "150"
-                        }
-                    },
-                    title: "Shocked Eyes GIF",
-                },
-                {
-                    type: "gif",
-                    id: "feqkVgjJpYtjy",
-                    slug: "eyes-shocked-bird-feqkVgjJpYtjy",
-                    url: "http://giphy.com/gifs/eyes-shocked-bird-feqkVgjJpYtjy",
-                    bitly_gif_url: "http://gph.is/XJ200y",
-                    bitly_url: "http://gph.is/XJ200y",
-                    embed_url: "http://giphy.com/embed/feqkVgjJpYtjy",
-                    username: "",
-                    source: "http://littleanimalgifs.tumblr.com/post/17994517807",
-                    rating: "g",
-                    caption: "",
-                    content_url: "",
-                    source_tld: "littleanimalgifs.tumblr.com",
-                    source_post_url: "http://littleanimalgifs.tumblr.com/post/17994517807",
-                    import_datetime: "2013-03-21 04:03:08",
-                    trending_datetime: "2014-11-12 06:22:52",
-                    images: {
-                        fixed_height: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/200.gif",
-                            width: "445",
-                            height: "200",
-                            size: "445432",
-                            mp4: "http://media0.giphy.com/media/feqkVgjJpYtjy/200.mp4",
-                            mp4_size: "27279",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/200.webp",
-                            webp_size: "420734"
-                        },
-                        fixed_height_still: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/200_s.gif",
-                            width: "445",
-                            height: "200"
-                        },
-                        fixed_height_downsampled: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/200_d.gif",
-                            width: "445",
-                            height: "200",
-                            size: "183225",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/200_d.webp",
-                            webp_size: "89516"
-                        },
-                        fixed_width: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/200w.gif",
-                            width: "200",
-                            height: "90",
-                            size: "115885",
-                            mp4: "http://media0.giphy.com/media/feqkVgjJpYtjy/200w.mp4",
-                            mp4_size: "31919",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/200w.webp",
-                            webp_size: "122600"
-                        },
-                        fixed_width_still: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/200w_s.gif",
-                            width: "200",
-                            height: "90"
-                        },
-                        fixed_width_downsampled: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/200w_d.gif",
-                            width: "200",
-                            height: "90",
-                            size: "83007",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/200w_d.webp",
-                            webp_size: "26460"
-                        },
-                        fixed_height_small: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/100.gif",
-                            width: "223",
-                            height: "100",
-                            size: "445432",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/100.webp",
-                            webp_size: "129604"
-                        },
-                        fixed_height_small_still: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/100_s.gif",
-                            width: "223",
-                            height: "100"
-                        },
-                        fixed_width_small: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/100w.gif",
-                            width: "100",
-                            height: "45",
-                            size: "115885",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/100w.webp",
-                            webp_size: "41620"
-                        },
-                        fixed_width_small_still: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/100w_s.gif",
-                            width: "100",
-                            height: "45"
-                        },
-                        downsized: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy.gif",
-                            width: "334",
-                            height: "150",
-                            size: "511581"
-                        },
-                        downsized_still: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy_s.gif",
-                            width: "334",
-                            height: "150"
-                        },
-                        downsized_large: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy.gif",
-                            width: "334",
-                            height: "150",
-                            size: "511581"
-                        },
-                        original: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy.gif",
-                            width: "334",
-                            height: "150",
-                            size: "511581",
-                            frames: "27",
-                            mp4: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy.mp4",
-                            mp4_size: "97841",
-                            webp: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy.webp",
-                            webp_size: "270108"
-                            },
-                            original_still: {
-                            url: "http://media0.giphy.com/media/feqkVgjJpYtjy/giphy_s.gif",
-                            width: "334",
-                            height: "150"
-                        }
-                    },
-                    title: "Shocked Eyes GIF",
-                }
-            ],
-        }
-    },
-    computed: {
-        searchTerm() {
-            return this.$store.state.searchTerm;
-        },
-    }
-}
-</script>
+  name: 'Search',
+  components: {
+    GifList,
+  },
+  async mounted() {
+    await this.search();
+  },
+  data() {
+    return {
+      gifs: [],
+      pagination: {},
+    };
+  },
+  methods: {
+    async search() {
+      let { limit = 25, page = 1 } = this.$route.query;
 
+      page = Number(page);
+      page = page <= 0 ? 1 : page;
+      const offset = page > 1 ? (page - 1) * limit : 0;
+      const searchResult = await Search.search({
+        limit,
+        offset,
+        q: this.searchTerm,
+      });
+
+      this.gifs = searchResult.data;
+
+      if (searchResult.pagination.count > 0) {
+        this.pagination.total = Math.ceil(
+          searchResult.pagination.total_count / searchResult.pagination.count,
+        );
+
+        this.pagination.page = page;
+      } else {
+        this.pagination.total = 0;
+        this.pagination.page = 1;
+      }
+    },
+  },
+  computed: {
+    searchTerm() {
+      return this.$route.query.q;
+    },
+  },
+  watch: {
+    '$route.query': {
+      handler(value) {
+        this.search();
+      },
+      deep: true,
+    },
+  },
+};
+</script>
